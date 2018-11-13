@@ -33,8 +33,10 @@ def processamento():
             fechamentos[i] = fechamentos[i].split(",")
             for j in range(len(fechamentos[i])):
                 fechamentos[i][j] = float(fechamentos[i][j])
+		
+        fechamentos.reverse()
 
-        ##print(fechamentos)
+        print(fechamentos)
 
         # Cálculo das primeiras médias aritméticas
 
