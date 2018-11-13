@@ -1,5 +1,6 @@
 import urllib.request
 import time
+import telepot
 
 # Função que retorna a média aritmética de uma lista
 def media_aritmetica(lista):
@@ -160,8 +161,17 @@ def processamento():
 
         print("Venda: %s" %(venda[0]))
         print("Compra: %s" %(compra[0]))
-
-        ##print(venda)
+		
+		##print(venda)
+		
+        # Envia mensagem pelo Telegram
+		
+		
+        print(urllib.request.urlopen("https://api.telegram.org/703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow/getUpdates").read())
+		
+        input()
+		
+		#urllib.request.urlopen("https://api.telegram.org/703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow/sendMessage?chat_id=[MY_CHANNEL_NAME]&text=[MY_MESSAGE_TEXT]").read()
 
 if __name__ == "__main__":
         while True:
