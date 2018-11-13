@@ -166,12 +166,9 @@ def processamento():
 		
         # Envia mensagem pelo Telegram
 		
-		
-        print(urllib.request.urlopen("https://api.telegram.org/703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow/getUpdates").read())
-		
-        input()
-		
-		#urllib.request.urlopen("https://api.telegram.org/703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow/sendMessage?chat_id=[MY_CHANNEL_NAME]&text=[MY_MESSAGE_TEXT]").read()
+        bot = telepot.Bot('703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow')
+        bot.sendMessage(-260640827, "Venda: %s" %(venda[0]))
+        bot.sendMessage(-260640827, "Compra: %s" %(compra[0]))
 
 if __name__ == "__main__":
         while True:
