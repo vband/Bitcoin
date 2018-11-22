@@ -1,6 +1,9 @@
-import urllib.request
+﻿import urllib.request
 import time
 import telepot
+import matplotlib.pyplot as plt
+from datetime import datetime
+import matplotlib.dates as mdates
 
 # Função que retorna a média aritmética de uma lista
 def media_aritmetica(lista):
@@ -23,6 +26,8 @@ def processamento():
         # Obtenção dos preços
 
         fechamentos = urllib.request.urlopen("https://api.bitfinex.com/v2/candles/trade:6h:tBTCUSD/hist?limit=1000").read()
+		
+		# Tratamento dos dados
 
         fechamentos = str(fechamentos)
 
@@ -35,9 +40,11 @@ def processamento():
             for j in range(len(fechamentos[i])):
                 fechamentos[i][j] = float(fechamentos[i][j])
 		
+        # Invertendo a lista para percorrê-la do fechamento mais antigo para o mais atual
+		
         fechamentos.reverse()
 
-        print(fechamentos)
+        ##print(fechamentos)
 
         # Cálculo das primeiras médias aritméticas
 
@@ -159,16 +166,48 @@ def processamento():
                         else:
                                 venda.append(False)
 
-        print("Venda: %s" %(venda[0]))
-        print("Compra: %s" %(compra[0]))
+        print("Venda: %s" %(venda[-1]))
+        print("Compra: %s" %(compra[-1]))
 		
 		##print(venda)
 		
         # Envia mensagem pelo Telegram
 		
         bot = telepot.Bot('703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow')
-        bot.sendMessage(-260640827, "Venda: %s" %(venda[0]))
-        bot.sendMessage(-260640827, "Compra: %s" %(compra[0]))
+        #bot.sendMessage(-260640827, "Venda: %s" %(venda[-1])) # Grupo de Análise de Risco
+        #bot.sendMessage(-260640827, "Compra: %s" %(compra[-1]))
+		
+        bot.sendMessage(149282401, "Venda: %s" %(venda[-1])) # Meu privado
+        bot.sendMessage(149282401, "Compra: %s" %(compra[-1]))
+		
+        # Desenha gráficos na tela
+		
+        tempos = []
+        locations = [0, 250, 500, 750, 999]
+        for i in range(len(fechamentos)):
+                if i in locations:
+                        ts = int(fechamentos[i][0])
+                        ts /= 1000
+                        tempos.append(datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+                        #tempos.append(datetime.utcfromtimestamp(ts).strftime('%H:%M:%S'))
+
+        precos = []
+        for i in range(len(fechamentos)):
+            precos.append(fechamentos[i][2])
+
+        fig, ax = plt.subplots()
+		
+        plt.plot(precos, 'C0')
+        plt.plot(medias_curto_prazo, 'C1')
+        plt.plot(medias_longo_prazo, 'C2')
+
+        plt.xticks(locations, tempos)
+        fig.autofmt_xdate()
+        
+        plt.xlabel('Tempo')
+        plt.ylabel('Dinheiro')
+        plt.legend(['Fechamento', 'Média de curto prazo', 'Média de longo prazo'])
+        plt.show()
 
 if __name__ == "__main__":
         while True:
