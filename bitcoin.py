@@ -6,7 +6,7 @@ from datetime import datetime
 import matplotlib.dates as mdates
 
 #---------------------------------------------------
-# Função que retorna a média aritmética de uma lista
+# Funcao que retorna a media aritmetica de uma lista
 #---------------------------------------------------
 def media_aritmetica(lista):
         n = len(lista)
@@ -19,13 +19,13 @@ def media_aritmetica(lista):
 #-------------------------------------------------------------------------------------------
 # Processamento principal
 #
-# Parâmetros:
-# 1. Lista com a cotação de Bitcoin
-# 2. Valor numérico do Threshold (usado para antecipar o delay experimentado nas transações)
+# Parametros:
+# 1. Lista com a cotacao de Bitcoin
+# 2. Valor numerico do Threshold (usado para antecipar o delay experimentado nas transacoes)
 #-------------------------------------------------------------------------------------------
 def processamento(fechamentos, threshold):
 
-        # Parâmetros
+        # Parametros
         n_dias_curto_prazo = 12
         n_dias_longo_prazo = 26
         n_dias_macd = 9
@@ -45,12 +45,12 @@ def processamento(fechamentos, threshold):
             for j in range(len(fechamentos[i])):
                 fechamentos[i][j] = float(fechamentos[i][j])
 		
-        # Invertendo a lista para percorrê-la do fechamento mais antigo para o mais atual
+        # Invertendo a lista para percorre-la do fechamento mais antigo para o mais atual
 		
         fechamentos.reverse()
 
         #-----------------------------------------
-        # Cálculo das primeiras médias aritméticas
+        # Calculo das primeiras medias aritmeticas
         #-----------------------------------------
 
         primeira_media_curto_prazo = 0
@@ -66,7 +66,7 @@ def processamento(fechamentos, threshold):
         primeira_media_longo_prazo = primeira_media_longo_prazo / n_dias_longo_prazo
 
         #---------------------------------
-        # Cálculo das médias (curto prazo)
+        # Calculo das medias (curto prazo)
         #---------------------------------
 
         medias_curto_prazo = []
@@ -76,15 +76,15 @@ def processamento(fechamentos, threshold):
                 # Preenche os primeiros valores com None
                 if i < n_dias_curto_prazo-1:
                         medias_curto_prazo.append(None)
-                # Inicializa a primeira média com a média aritmética
+                # Inicializa a primeira media com a media aritmetica
                 elif i == n_dias_curto_prazo-1:
                         medias_curto_prazo.append(primeira_media_curto_prazo)
-                # Calcula a média exponencial
+                # Calcula a media exponencial
                 else:
                         medias_curto_prazo.append((fechamentos[i][2] - medias_curto_prazo[i-1]) * multiplicador_curto_prazo + medias_curto_prazo[i-1])
                         
         #---------------------------------
-        # Cálculo das médias (longo prazo)
+        # Celculo das medias (longo prazo)
         #---------------------------------
 
         medias_longo_prazo = []
@@ -94,15 +94,15 @@ def processamento(fechamentos, threshold):
                 # Preenche os primeiros valores com None
                 if i < n_dias_longo_prazo-1:
                         medias_longo_prazo.append(None)
-                # Inicializa a primeira média com a média aritmética
+                # Inicializa a primeira media com a media aritmetica
                 elif i == n_dias_longo_prazo-1:
                         medias_longo_prazo.append(primeira_media_longo_prazo)
-                # Calcula a média exponencial
+                # Calcula a media exponencial
                 else:
                         medias_longo_prazo.append((fechamentos[i][2] - medias_longo_prazo[i-1]) * multiplicador_longo_prazo + medias_longo_prazo[i-1])
 
         #----------------
-        # Cálculo do MACD
+        # Calculo do MACD
         #----------------
 
         macd = []
@@ -114,7 +114,7 @@ def processamento(fechamentos, threshold):
                         macd.append(None)
 
         #------------------
-        # Cálculo do signal
+        # Calculo do signal
         #------------------
 
         signal = []
@@ -124,7 +124,7 @@ def processamento(fechamentos, threshold):
                 # Preenche os primeiros valores com None
                 if i < (n_dias_longo_prazo + n_dias_macd - 2):
                         signal.append(None)
-                # Inicializa o primeiro signal com a média aritmética dos 9 primeiros MACDs
+                # Inicializa o primeiro signal com a media aritmetica dos 9 primeiros MACDs
                 elif i == (n_dias_longo_prazo + n_dias_macd - 2):
                         signal.append(media_aritmetica(macd[i-n_dias_macd+1 : i+1]))
                 # Calcula o signal
@@ -132,7 +132,7 @@ def processamento(fechamentos, threshold):
                         signal.append((macd[i] - signal[i-1]) * multiplicador_signal + signal[i-1])
 
         #----------------------
-        # Cálculo do histograma
+        # Calculo do histograma
         #----------------------
 
         histograma = []
@@ -148,8 +148,8 @@ def processamento(fechamentos, threshold):
             precos.append(fechamentos[i][2])
 
         #--------------------------------------------------------------------
-        # Cálculo do vetor de compra (true caso compra, false caso contrário)
-        # Cálculo do vetor de venda (true caso venda, false caso contrário)
+        # Calculo do vetor de compra (true caso compra, false caso contrario)
+        # Calculo do vetor de venda (true caso venda, false caso contrario)
         #--------------------------------------------------------------------
 
         compra = []
@@ -157,11 +157,11 @@ def processamento(fechamentos, threshold):
         preco_ultima_op = precos[0]
 
         for i in range(len(fechamentos)):
-                # Inicialização
+                # Inicializacao
                 if histograma[i] == None or histograma[i-1] == None or signal[i] == None:
                         compra.append(False)
                         venda.append(False)
-                # Condições
+                # Condicoes
                 else:
                         # Compra
 ##                        if histograma[i] > -0.5 and histograma[i] < 0 and histograma[i-1] < histograma[i] * 2:
@@ -190,53 +190,27 @@ def processamento(fechamentos, threshold):
         #-----------------------------
 		
         bot = telepot.Bot('703200255:AAF5ym-tGJSOIaTDyu5XKi605-Uq6GWtWow')
-        #bot.sendMessage(-260640827, "Venda: %s" %(venda[-1])) # Grupo de Análise de Risco
+        #bot.sendMessage(-260640827, "Venda: %s" %(venda[-1])) # Grupo de Analise de Risco
         #bot.sendMessage(-260640827, "Compra: %s" %(compra[-1]))
 		
         bot.sendMessage(149282401, "Venda: %s" %(venda[-1])) # Meu privado
         bot.sendMessage(149282401, "Compra: %s" %(compra[-1]))
-		
-        #---------------------------
-        # Desenha o gráfico na tela
-        #---------------------------
-		
-        # Constrói o eixo X como sendo as datas e os horários
-        
-##        tempos = []
-##        locations = [0, 250, 500, 750, 999]
-##        for i in range(len(fechamentos)):
-##                if i in locations:
-##                        ts = int(fechamentos[i][0])
-##                        ts /= 1000
-##                        tempos.append(datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
-##                        #tempos.append(datetime.utcfromtimestamp(ts).strftime('%H:%M:%S'))
-
-##        valores_i = range(1000)
-
-        fig, ax = plt.subplots()
-
-##        plt.xticks(locations, tempos)
-##        fig.autofmt_xdate()
-        
-        plt.xlabel('Tempo')
-        plt.ylabel('Preço ($)')
-        plt.legend(['Fechamento', 'Média de curto prazo', 'Média de longo prazo'])
         
         #----------
-        # Simulação
+        # Simulacao
         #----------
         
-        # Sub-intervalo da cotação do bitcoin a ser considerado. Deve ser no mínimo 0 e no máximo 999
+        # Sub-intervalo da cotacao do bitcoin a ser considerado. Deve ser no minimo 0 e no maximo 999
         iteracao_ini = 0
-        iteracao_fim = 999
+        iteracao_fim = 900
 
-        # Parâmetros
-        carteira_dolar = 10000                                    # Valor inicial da carteira de dólar a ser simulada
+        # Parametros
+        carteira_dolar = 10000                                    # Valor inicial da carteira de dolar a ser simulada
         carteira_bitcoin = carteira_dolar / precos[iteracao_ini]  # Valor inicial da carteira de bitcoin a ser simulada
-        porcentagem_venda = 0.5                                   # Porcentagem da carteira que será usada nas vendas
-        porcentagem_compra = 0.5                                  # Porcentagem da carteira que será usada nas compras
+        porcentagem_venda = 0.5                                   # Porcentagem da carteira que sera usada nas vendas
+        porcentagem_compra = 0.5                                  # Porcentagem da carteira que sera usada nas compras
 
-        # Variáveis usadas para comparar o dinheiro inicial com o dinheiro final
+        # Variaveis usadas para comparar o dinheiro inicial com o dinheiro final
         carteira_dolar_ini = carteira_dolar
         carteira_bit_ini = carteira_bitcoin
         dinheiro_tot_ini = carteira_dolar + carteira_bitcoin * precos[iteracao_ini]
@@ -252,49 +226,68 @@ def processamento(fechamentos, threshold):
                         carteira_bitcoin -= carteira_bitcoin * porcentagem_venda
                         cont_venda += 1
                         if histograma[i-2] == None:
-                                print("%d. Vendeu. Preço: %.2f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dólar: %.2f. Carteira Bitcoin: %.2f" %(i, precos[i], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin))
+                                print("%d. Vendeu. Preco: %.2f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dolar: %.2f. Carteira Bitcoin: %.2f. Money: %.2f" %(i, precos[i], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin, carteira_dolar + carteira_bitcoin * precos[i]))
                         else:
-                                print("%d. Vendeu. Preço: %.2f. Histograma[-2]: %.5f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dólar: %.2f. Carteira Bitcoin: %.2f" %(i, precos[i], histograma[i-2], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin))
+                                print("%d. Vendeu. Preco: %.2f. Histograma[-2]: %.5f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dolar: %.2f. Carteira Bitcoin: %.2f. Money: %.2f" %(i, precos[i], histograma[i-2], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin, carteira_dolar + carteira_bitcoin * precos[i]))
                 # Compra
                 elif compra[i] == True and venda[i] == False:
                         carteira_bitcoin += (carteira_dolar * porcentagem_compra) / precos[i]
                         carteira_dolar -= carteira_dolar * porcentagem_compra
                         cont_compra += 1
                         if histograma[i-2] == None:
-                                print("%d. Comprou. Preço: %.2f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dólar: %.2f. Carteira Bitcoin: %.2f" %(i, precos[i], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin))
+                                print("%d. Comprou. Preco: %.2f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dolar: %.2f. Carteira Bitcoin: %.2f. Money: %.2f" %(i, precos[i], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin, carteira_dolar + carteira_bitcoin * precos[i]))
                         else:
-                                print("%d. Comprou. Preço: %.2f. Histograma[-2]: %.5f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dólar: %.2f. Carteira Bitcoin: %.2f" %(i, precos[i], histograma[i-2], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin))
-                # Erro - não é possível vender e comprar ao mesmo tempo!
+                                print("%d. Comprou. Preco: %.2f. Histograma[-2]: %.5f. Histograma[-1]: %.5f. Histograma: %.5f. Carteira Dolar: %.2f. Carteira Bitcoin: %.2f. Money: %.2f" %(i, precos[i], histograma[i-2], histograma[i-1], histograma[i], carteira_dolar, carteira_bitcoin, carteira_dolar + carteira_bitcoin * precos[i]))
+                # Erro - não e possivel vender e comprar ao mesmo tempo!
                 elif compra[i] == True and venda[i] == True:
-                        print("Erro: fórmula errada!")
+                        print("Erro: formula errada!")
 
-        # Variáveis usadas para comparar o dinheiro inicial com o dinheiro final
+        # Variaveis usadas para comparar o dinheiro inicial com o dinheiro final
         carteira_dolar_fim = carteira_dolar
         carteira_bit_fim = carteira_bitcoin
         dinheiro_tot_fim = carteira_dolar + carteira_bitcoin * precos[iteracao_fim]
 
-        # Apresentação dos resultados
+        # Apresentacao dos resultados
         print("")
         print("Foram realizadas %d vendas e %d compras." %(cont_venda, cont_compra))
-        print("Carteira Dólar Inicial: %.2f" %(carteira_dolar_ini))
-        print("Carteira Dólar Final: %.2f" %(carteira_dolar_fim))
+        print("Carteira Dolar Inicial: %.2f" %(carteira_dolar_ini))
+        print("Carteira Dolar Final: %.2f" %(carteira_dolar_fim))
         print("Carteira Bitcoin Inicial: %.2f" %(carteira_bit_ini))
         print("Carteira Bitcoin Final: %.2f" %(carteira_bit_fim))
         print("Dinheiro Total Inicial: %.2f" %(dinheiro_tot_ini))
         print("Dinheiro Total Final: %.2f" %(dinheiro_tot_fim))
 
-        # -----------------------------------------
-        # Desenha os pontos de interesse no gráfico
-        #------------------------------------------
+        #---------------------------
+        # Desenha o grafico na tela
+        #---------------------------
+		
+        # Constroi o eixo X como sendo as datas e os horarios
+        
+##        tempos = []
+##        locations = [0, 250, 500, 750, 999]
+##        for i in range(len(fechamentos)):
+##                if i in locations:
+##                        ts = int(fechamentos[i][0])
+##                        ts /= 1000
+##                        tempos.append(datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+##                        #tempos.append(datetime.utcfromtimestamp(ts).strftime('%H:%M:%S'))
 
-        # Determina a localização dos pontos de venda
+        plt.subplot(211)
+
+##        plt.xticks(locations, tempos)
+##        fig.autofmt_xdate()
+        
+        plt.xlabel('Tempo')
+        plt.ylabel('Preço ($)')
+
+        # Determina a localizacao dos pontos de venda
         locations_venda = []
         for i in range(len(venda)):
                 if venda[i] == True:
                         plt.annotate('Venda', xy=(i, precos[i]), xytext=(i+2, precos[i]), arrowprops=dict(facecolor='green', shrink=0.05))
                         locations_venda.append(i)
 
-        # Determina a localização dos pontos de compra
+        # Determina a localizacao dos pontos de compra
         locations_compra = []
         for i in range(len(compra)):
                 if compra[i] == True:
@@ -304,29 +297,40 @@ def processamento(fechamentos, threshold):
         locations_all = list(set().union(locations_compra, locations_venda))
         locations_all.sort()
 
-        # Mostra o gráfico na tela
-        plt.plot(precos, color='b', marker='o', markevery=locations_all)
-        plt.plot(medias_curto_prazo, color='g')
-        plt.plot(medias_longo_prazo, color='r')
+        # Desenha o grafico dos precos e medias
+        plt.plot(precos, color='black', marker='o', markevery=locations_all)
+        plt.plot(medias_curto_prazo, color='orange')
+        plt.plot(medias_longo_prazo, color='green')
+        plt.legend(['Fechamento', 'Média de curto prazo', 'Média de longo prazo'])
+
+        # Desenha o grafico do MACD
+        plt.subplot(212)
+        plt.xlabel('Tempo')
+        plt.ylabel('MACD ($)')
+        plt.plot(macd, color='blue', marker='o', markevery=locations_all)
+        plt.plot(signal, color='salmon', linestyle='--')
+        #plt.grid(True, axis='y', linestyle='--')
+        plt.plot([0, 999], [0, 0], color='black', linestyle='--', alpha=0.3)
+        
+        plt.legend(['MACD', 'Sinal de Transação'])
+        
         plt.show()
 
-        # Retorna o dinheiro total final obtido pela simulação
+        # Retorna o dinheiro total final obtido pela simulacao
         return dinheiro_tot_fim
                 
 #------------
-# Função Main
+# Funcao Main
 #------------
 if __name__ == "__main__":
 
-        # Obtenção dos dados
-        fechamentos = urllib.request.urlopen("https://api.bitfinex.com/v2/candles/trade:6h:tBTCUSD/hist?limit=1000").read()
-
-        # Opção 1: Loop principal
+        # Opcao 1: Loop principal
         while True:
-                processamento(fechamentos, 1) # Parâmetros: 1. Lista da cotação do Bitcoin; 2. Valor numérico do Threshold
+                fechamentos = urllib.request.urlopen("https://api.bitfinex.com/v2/candles/trade:6h:tBTCUSD/hist?limit=1000").read()
+                processamento(fechamentos, 1) # Parametros: 1. Lista da cotacao do Bitcoin; 2. Valor numerico do Threshold
                 time.sleep(3600 * 6)
 
-        # Opção 2: Loop para determinar o valor ideal do Threshold para o corrente momento
+        # Opcao 2: Loop para determinar o valor ideal do Threshold para o corrente momento
 ##        threshold_ini = 0
 ##        threshold_fim = 99
 ##        passo = 0.1
