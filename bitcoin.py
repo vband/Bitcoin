@@ -1,7 +1,17 @@
 ﻿import urllib.request
 import time
-import telepot
-import matplotlib.pyplot as plt
+try:
+        import telepot
+except ImportError:
+        from pip._internal import main as pip
+        pip(['install', 'telepot'])
+        import telepot
+try:
+        import matplotlib.pyplot as plt
+except:
+        from pip._internal import main as pip
+        pip(['install', 'matplotlib'])
+        import matplotlib.pyplot as plt
 from datetime import datetime
 import matplotlib.dates as mdates
 import sys
