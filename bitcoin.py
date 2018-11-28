@@ -4,6 +4,9 @@ import telepot
 import matplotlib.pyplot as plt
 from datetime import datetime
 import matplotlib.dates as mdates
+import sys
+
+grafico = False
 
 #---------------------------------------------------
 # Funcao que retorna a media aritmetica de uma lista
@@ -257,64 +260,66 @@ def processamento(fechamentos, threshold):
         print("Dinheiro Total Inicial: %.2f" %(dinheiro_tot_ini))
         print("Dinheiro Total Final: %.2f" %(dinheiro_tot_fim))
 
-        #---------------------------
-        # Desenha o grafico na tela
-        #---------------------------
-		
-        # Constroi o eixo X como sendo as datas e os horarios
-        
-##        tempos = []
-##        locations = [0, 250, 500, 750, 999]
-##        for i in range(len(fechamentos)):
-##                if i in locations:
-##                        ts = int(fechamentos[i][0])
-##                        ts /= 1000
-##                        tempos.append(datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
-##                        #tempos.append(datetime.utcfromtimestamp(ts).strftime('%H:%M:%S'))
+        if grafico:
 
-        plt.subplot(211)
+                #---------------------------
+                # Desenha o grafico na tela
+                #---------------------------
+                        
+                # Constroi o eixo X como sendo as datas e os horarios
+                
+        ##        tempos = []
+        ##        locations = [0, 250, 500, 750, 999]
+        ##        for i in range(len(fechamentos)):
+        ##                if i in locations:
+        ##                        ts = int(fechamentos[i][0])
+        ##                        ts /= 1000
+        ##                        tempos.append(datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+        ##                        #tempos.append(datetime.utcfromtimestamp(ts).strftime('%H:%M:%S'))
 
-##        plt.xticks(locations, tempos)
-##        fig.autofmt_xdate()
-        
-        plt.xlabel('Tempo')
-        plt.ylabel('Preço ($)')
+                plt.subplot(211)
 
-        # Determina a localizacao dos pontos de venda
-        locations_venda = []
-        for i in range(len(venda)):
-                if venda[i] == True:
-                        plt.annotate('Venda', xy=(i, precos[i]), xytext=(i+2, precos[i]), arrowprops=dict(facecolor='green', shrink=0.05))
-                        locations_venda.append(i)
+        ##        plt.xticks(locations, tempos)
+        ##        fig.autofmt_xdate()
+                
+                plt.xlabel('Tempo')
+                plt.ylabel('Preço ($)')
 
-        # Determina a localizacao dos pontos de compra
-        locations_compra = []
-        for i in range(len(compra)):
-                if compra[i] == True:
-                        plt.annotate('Compra', xy=(i, precos[i]), xytext=(i+2, precos[i]), arrowprops=dict(facecolor='red', shrink=0.05))
-                        locations_compra.append(i)
+                # Determina a localizacao dos pontos de venda
+                locations_venda = []
+                for i in range(len(venda)):
+                        if venda[i] == True:
+                                plt.annotate('Venda', xy=(i, precos[i]), xytext=(i+2, precos[i]), arrowprops=dict(facecolor='green', shrink=0.05))
+                                locations_venda.append(i)
 
-        locations_all = list(set().union(locations_compra, locations_venda))
-        locations_all.sort()
+                # Determina a localizacao dos pontos de compra
+                locations_compra = []
+                for i in range(len(compra)):
+                        if compra[i] == True:
+                                plt.annotate('Compra', xy=(i, precos[i]), xytext=(i+2, precos[i]), arrowprops=dict(facecolor='red', shrink=0.05))
+                                locations_compra.append(i)
 
-        # Desenha o grafico dos precos e medias
-        plt.plot(precos, color='black', marker='o', markevery=locations_all)
-        plt.plot(medias_curto_prazo, color='orange')
-        plt.plot(medias_longo_prazo, color='green')
-        plt.legend(['Fechamento', 'Média de curto prazo', 'Média de longo prazo'])
+                locations_all = list(set().union(locations_compra, locations_venda))
+                locations_all.sort()
 
-        # Desenha o grafico do MACD
-        plt.subplot(212)
-        plt.xlabel('Tempo')
-        plt.ylabel('MACD ($)')
-        plt.plot(macd, color='blue', marker='o', markevery=locations_all)
-        plt.plot(signal, color='salmon', linestyle='--')
-        #plt.grid(True, axis='y', linestyle='--')
-        plt.plot([0, 999], [0, 0], color='black', linestyle='--', alpha=0.3)
-        
-        plt.legend(['MACD', 'Sinal de Transação'])
-        
-        plt.show()
+                # Desenha o grafico dos precos e medias
+                plt.plot(precos, color='black', marker='o', markevery=locations_all)
+                plt.plot(medias_curto_prazo, color='orange')
+                plt.plot(medias_longo_prazo, color='green')
+                plt.legend(['Fechamento', 'Média de curto prazo', 'Média de longo prazo'])
+
+                # Desenha o grafico do MACD
+                plt.subplot(212)
+                plt.xlabel('Tempo')
+                plt.ylabel('MACD ($)')
+                plt.plot(macd, color='blue', marker='o', markevery=locations_all)
+                plt.plot(signal, color='salmon', linestyle='--')
+                #plt.grid(True, axis='y', linestyle='--')
+                plt.plot([0, 999], [0, 0], color='black', linestyle='--', alpha=0.3)
+                
+                plt.legend(['MACD', 'Sinal de Transação'])
+                
+                plt.show()
 
         # Retorna o dinheiro total final obtido pela simulacao
         return dinheiro_tot_fim
@@ -323,6 +328,10 @@ def processamento(fechamentos, threshold):
 # Funcao Main
 #------------
 if __name__ == "__main__":
+
+        if len(sys.argv) > 1:
+                if sys.argv[1] == "-g":
+                        grafico = True
 
         # Opcao 1: Loop principal
         while True:
